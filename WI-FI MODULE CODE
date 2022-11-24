@@ -1,0 +1,41 @@
+# Wi-Fi module code
+/*** Wi-Fi module code for to send the call notification to the phone using IFTTT App ***/
+
+#include <ESP8266WiFi.h>
+int led =5;
+const char* ssid = "/* Your Wi-Fi name */";
+const char* password = "/* Your Wi-Fi Password */";
+const char* host ="maker.ifttt.com";
+
+void setup()  {
+  pinMode(5,INPUT);
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting");
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop(){
+           WiFiClient client;
+           const int httpPort = 80;
+           if (!client.connect (host, httpPort)) {
+                 Serial.println("connection failed");
+           return;}
+  
+  if(led == 1){                 
+  String url="/trigger/alert/json/with/key/c0USsoQm4-NivrVu8kOeX-";
+  Serial.print("Requesting URL: "); 
+  Serial.println(url);
+  client.print(String("GET") + url + "HTTP/1.1\r\n" +"Host: "+ host + "\r\n" + "Connection: close\r\n\r\n");
+  }
+  else
+  {
+     Serial.print("gas is not leaking.... "); 
+  }
+}
